@@ -32,12 +32,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: P4ROOT
+            value: /data
+          - name: P4PORT
+            value: "{{ .Values.service.port }}"
           volumeMounts:
           - name: data
             mountPath: /data
           ports:
-            - name: tcp_perforce
-              containerPort: 1666
+            - name: tcp-perforce
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
       {{- with .Values.nodeSelector }}
       nodeSelector:
